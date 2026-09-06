@@ -266,7 +266,8 @@ Respond ONLY with the JSON object, no additional text.
 def _call_groq(prompt: str) -> str:
     """Call Groq API for fast LLM inference with model fallback."""
     raw_key = os.getenv("GROQ_API_KEY", "") or GROQ_API_KEY
-    api_key = raw_key.strip("'\" \t\r\n")
+    import re
+    api_key = re.sub(r'[^a-zA-Z0-9_]', '', raw_key)
 
     if not api_key:
         return _generate_fallback_response(

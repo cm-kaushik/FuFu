@@ -41,7 +41,7 @@ async def search_stocks(
 
         if q:
 
-            search_term = f"%{q}%"
+            search_term = f"%{q.strip().lower()}%"
 
             cursor.execute(
                 """
@@ -51,8 +51,8 @@ async def search_stocks(
                     sector,
                     exchange
                 FROM stocks
-                WHERE symbol LIKE %s
-                   OR name LIKE %s
+                WHERE LOWER(symbol) LIKE %s
+                   OR LOWER(name) LIKE %s
                 ORDER BY name
                 LIMIT 20
                 """,
@@ -264,6 +264,7 @@ async def get_all_stocks(
                 exchange
             FROM stocks
             ORDER BY name
+            LIMIT 50
             """
         )
 

@@ -782,7 +782,7 @@ def get_stocks_by_sector(
 
     try:
         if search and search.strip():
-            search_pattern = f"%{search.strip()}%"
+            search_pattern = f"%{search.strip().lower()}%"
             if db_sectors:
                 format_strings = ",".join(["%s"] * len(db_sectors))
                 cursor.execute(
@@ -790,7 +790,7 @@ def get_stocks_by_sector(
                     SELECT id, symbol, name, sector, exchange
                     FROM stocks
                     WHERE sector IN ({format_strings})
-                      AND (symbol LIKE %s OR name LIKE %s)
+                      AND (LOWER(symbol) LIKE %s OR LOWER(name) LIKE %s)
                     LIMIT 35
                     """,
                     (*db_sectors, search_pattern, search_pattern),
@@ -800,7 +800,7 @@ def get_stocks_by_sector(
                     """
                     SELECT id, symbol, name, sector, exchange
                     FROM stocks
-                    WHERE symbol LIKE %s OR name LIKE %s
+                    WHERE LOWER(symbol) LIKE %s OR LOWER(name) LIKE %s
                     LIMIT 35
                     """,
                     (search_pattern, search_pattern),

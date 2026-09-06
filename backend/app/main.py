@@ -45,9 +45,16 @@ app.include_router(ai_advisor.router, prefix="/api/ai", tags=["AI Advisor"])
 @app.on_event("startup")
 async def startup():
     """Initialize database and connection pool on startup."""
-    init_database()
-    init_pool()
-    print("[OK] Stock Investment App is running!")
+    try:
+        init_database()
+        init_pool()
+        print("[OK] Stock Investment App is running and database initialized!")
+    except Exception as e:
+        print(f"[ERROR] Database initialization issue on startup: {e}")
+        try:
+            init_pool()
+        except Exception as pool_err:
+            print(f"[ERROR] Connection pool error: {pool_err}")
 
 
 @app.get("/")

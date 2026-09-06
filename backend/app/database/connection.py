@@ -6,9 +6,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_db_config():
+    host = os.getenv("DB_HOST", "localhost")
+    port_env = os.getenv("DB_PORT")
+    if port_env:
+        port = int(port_env)
+    elif "tidbcloud.com" in host:
+        port = 4000
+    else:
+        port = 3306
+
     config = {
-        "host": os.getenv("DB_HOST", "localhost"),
-        "port": int(os.getenv("DB_PORT", 3306)),
+        "host": host,
+        "port": port,
         "user": os.getenv("DB_USER", "root"),
         "password": os.getenv("DB_PASSWORD", ""),
         "database": os.getenv("DB_NAME", "stock_app"),

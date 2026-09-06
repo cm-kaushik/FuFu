@@ -9,7 +9,13 @@ def init_database():
     """Create database and tables if they don't exist."""
     db_name = os.getenv("DB_NAME", "stock_app")
     host = os.getenv("DB_HOST", "localhost")
-    port = int(os.getenv("DB_PORT", 3306))
+    port_env = os.getenv("DB_PORT")
+    if port_env:
+        port = int(port_env)
+    elif "tidbcloud.com" in host:
+        port = 4000
+    else:
+        port = 3306
     user = os.getenv("DB_USER", "root")
     password = os.getenv("DB_PASSWORD", "")
 

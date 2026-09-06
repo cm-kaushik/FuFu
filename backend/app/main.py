@@ -33,13 +33,14 @@ else:
         allow_headers=["*"],
     )
 
-# Include API routers
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(stocks.router, prefix="/api/stocks", tags=["Stocks"])
-app.include_router(portfolio.router, prefix="/api/portfolio", tags=["Portfolio"])
-app.include_router(transactions.router, prefix="/api/transactions", tags=["Transactions"])
-app.include_router(indexes.router, prefix="/api/indexes", tags=["Custom Indexes"])
-app.include_router(ai_advisor.router, prefix="/api/ai", tags=["AI Advisor"])
+# Include API routers (support both /api and root paths)
+for pfx in ["/api", ""]:
+    app.include_router(auth.router, prefix=f"{pfx}/auth", tags=["Authentication"])
+    app.include_router(stocks.router, prefix=f"{pfx}/stocks", tags=["Stocks"])
+    app.include_router(portfolio.router, prefix=f"{pfx}/portfolio", tags=["Portfolio"])
+    app.include_router(transactions.router, prefix=f"{pfx}/transactions", tags=["Transactions"])
+    app.include_router(indexes.router, prefix=f"{pfx}/indexes", tags=["Custom Indexes"])
+    app.include_router(ai_advisor.router, prefix=f"{pfx}/ai", tags=["AI Advisor"])
 
 
 @app.on_event("startup")

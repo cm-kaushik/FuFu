@@ -154,21 +154,38 @@ async def get_popular_stocks(
     )
 
     try:
-
+        popular_symbols = [
+            'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'INFY.NS',
+            'ICICIBANK.NS', 'HINDUNILVR.NS', 'SBIN.NS', 'BHARTIARTL.NS',
+            'ITC.NS', 'KOTAKBANK.NS', 'LT.NS', 'AXISBANK.NS'
+        ]
+        placeholders = ', '.join(['%s'] * len(popular_symbols))
         cursor.execute(
-            """
+            f"""
             SELECT
                 symbol,
                 name,
                 sector,
                 exchange
             FROM stocks
-            ORDER BY id
-            LIMIT 12
-            """
+            WHERE symbol IN ({placeholders})
+            ORDER BY FIELD(symbol, {placeholders})
+            """,
+            popular_symbols + popular_symbols
         )
 
         stocks = cursor.fetchall()
+
+        if len(stocks) < 12:
+            cursor.execute(
+                """
+                SELECT symbol, name, sector, exchange
+                FROM stocks
+                ORDER BY id
+                LIMIT 12
+                """
+            )
+            stocks = cursor.fetchall()
 
     finally:
 
